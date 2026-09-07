@@ -25,6 +25,7 @@ jobs:
           test -s site/index.html
           test -s site/styles.css
           test -s site/assets/north-wind-logo.png
+          test -s site/assets/north-wind-coast.png
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -3,54 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#153f34">
+  <meta name="theme-color" content="#102e28">
   <meta name="description" content="North Wind Capital is Byron and Hasnain's project for exploring data, testing ideas, and occasionally mistaking confidence for evidence.">
   <title>North Wind Capital | A prevailing bias</title>
   <link rel="icon" type="image/png" href="assets/north-wind-logo.png">
+  <link rel="preload" as="image" href="assets/north-wind-coast.png">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="masthead wrap">
-    <a class="brand" href="#" aria-label="North Wind Capital home"><img src="assets/north-wind-logo.png" alt="" width="64" height="64"><span>North Wind<span class="brand-small">Capital</span></span></a>
+  <header class="masthead">
+    <a class="brand" href="#" aria-label="North Wind Capital home"><img src="assets/north-wind-logo.png" alt="" width="54" height="54"><span>North Wind<span class="brand-small">Capital</span></span></a>
     <nav aria-label="Main navigation"><a href="#philosophy">Approach</a><a href="#directors">Directors</a><a href="#outlook">Outlook</a></nav>
+    <button id="motion-toggle" class="motion-toggle" type="button" hidden aria-pressed="false">Pause motion</button>
+    <div class="scroll-progress" aria-hidden="true"></div>
   </header>
   <main id="main">
-    <section class="hero wrap" aria-labelledby="hero-title">
-      <div class="hero-copy">
-        <h1 id="hero-title">Capital, with<br>a prevailing <em>bias.</em></h1>
-        <p class="intro">We’re Byron and Hasnain. We explore data, test ideas, and occasionally mistake confidence for evidence.</p>
-        <a class="button" href="#outlook">Try the outlook generator <span aria-hidden="true">↗</span></a>
-      </div>
-      <div class="instrument" aria-hidden="true">
-        <svg class="compass" viewBox="0 0 600 600">
-          <g fill="none" stroke="currentColor"><circle cx="300" cy="300" r="220" opacity=".28"/><circle cx="300" cy="300" r="198" opacity=".4" stroke-dasharray="2 19" stroke-width="9"/><path d="M300 60V540M60 300H540" opacity=".2"/></g>
-          <g class="wind-lines" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"><path d="M20 390C130 260 170 390 300 290S480 215 580 250"/><path d="M20 418C130 288 170 418 300 318S480 243 580 278"/><path d="M20 446C130 316 170 446 300 346S480 271 580 306"/></g>
-          <g class="compass-type" text-anchor="middle" fill="currentColor"><text x="300" y="38">N</text><text x="568" y="309">E</text><text x="300" y="581">S</text><text x="32" y="309">W</text></g>
-          <g class="needle"><path d="M300 110L348 300L300 280L252 300Z" fill="#153f34"/><path d="M300 490L348 300L300 320L252 300Z" fill="#a9472b"/><path d="M300 110V280L252 300Z" fill="#2c5a48"/><circle cx="300" cy="300" r="12" fill="#f3f0e5" stroke="#153f34" stroke-width="2"/></g>
-        </svg>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-stage">
+        <div class="hero-image" aria-hidden="true"><img src="assets/north-wind-coast.png" alt="" width="1672" height="941" fetchpriority="high"></div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-copy wrap">
+          <h1 id="hero-title"><span class="title-line"><span>Capital, with</span></span><span class="title-line"><span>a prevailing <em>bias.</em></span></span></h1>
+          <p class="intro">We explore data, test ideas, and occasionally<br class="desktop-break"> mistake confidence for evidence.</p>
+          <a class="hero-link" href="#philosophy">Explore our approach <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-horizon" aria-hidden="true"></div>
       </div>
     </section>
-    <section id="philosophy" class="philosophy wrap" aria-labelledby="approach-title">
-      <h2 id="approach-title">Curiosity, followed by a little scrutiny.</h2>
-      <div class="principles">
-        <article><h3>Find the signal.</h3><p>Start with a question. Look for data that can answer it, including the evidence we’d rather ignore.</p></article>
-        <article><h3>Question the model.</h3><p>Test the assumptions. A convincing chart is a reason to look closer, not a reason to stop.</p></article>
-        <article><h3>Change our minds.</h3><p>Keep what holds up. Drop what doesn’t. Try to do this before calling it a strategic pivot.</p></article>
+    <section class="statement wrap" aria-labelledby="statement-title">
+      <h2 id="statement-title" class="reading-line">Curiosity, followed by a little scrutiny.</h2>
+      <p class="reveal">An interesting idea is a starting point.<br>The work is finding out whether it holds up.</p>
+    </section>
+    <section id="philosophy" class="philosophy" aria-label="Our approach">
+      <div class="approach-stage wrap">
+        <div class="approach-heading"><h2>Follow the question.<br><em>Then the evidence.</em></h2><div class="approach-steps" aria-hidden="true"><span></span><span></span><span></span></div></div>
+        <div class="principles">
+          <article class="principle"><h3>Find<br>the signal.</h3><p>Start with a question. Look for data that can answer it, including the evidence we’d rather ignore.</p></article>
+          <article class="principle"><h3>Question<br>the model.</h3><p>Test the assumptions. A convincing chart is a reason to look closer, not a reason to stop.</p></article>
+          <article class="principle"><h3>Change<br>our minds.</h3><p>Keep what holds up. Drop what doesn’t. Try to do this before calling it a strategic pivot.</p></article>
+        </div>
+        <svg class="flow-art" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="currentColor"><path d="M-100 700C150 700 100 100 400 300S650 950 1000 200S1150 300 1300 100"/><path d="M-100 730C150 730 100 130 400 330S650 980 1000 230S1150 330 1300 130"/><path d="M-100 760C150 760 100 160 400 360S650 1010 1000 260S1150 360 1300 160"/><path d="M-100 790C150 790 100 190 400 390S650 1040 1000 290S1150 390 1300 190"/><path d="M-100 820C150 820 100 220 400 420S650 1070 1000 320S1150 420 1300 220"/></g></svg>
       </div>
     </section>
     <section id="directors" class="directors wrap" aria-labelledby="directors-title">
-      <h2 id="directors-title">Two directors. Several opinions.</h2>
+      <div class="directors-heading reveal"><h2 id="directors-title">Two directors.<br><em>Several opinions.</em></h2></div>
       <div class="director-list">
-        <article class="director"><h3>Byron</h3><p class="director-role">Director · Head of Prevailing Opinions</p><p>“What if?” is usually followed by a new spreadsheet.</p></article>
-        <article class="director"><h3>Hasnain</h3><p class="director-role">Director · Chief Headwind Officer</p><p>“Up and to the right” is not a methodology.</p></article>
+        <article class="director reveal"><h3>Byron</h3><p class="director-role">Director · Head of Prevailing Opinions</p><p>“What if?” is usually followed by a new spreadsheet.</p></article>
+        <article class="director reveal"><h3>Hasnain</h3><p class="director-role">Director · Chief Headwind Officer</p><p>“Up and to the right” is not a methodology.</p></article>
       </div>
     </section>
     <section id="outlook" class="outlook" aria-labelledby="outlook-title">
+      <div class="outlook-wash" aria-hidden="true"></div>
       <div class="wrap outlook-grid">
-        <div class="outlook-intro"><h2 id="outlook-title">Adjust the confidence.<br>Keep the evidence.</h2><p>Our outlook generator turns a little conviction into a lot of commentary. Move the slider and see how the story changes.</p><p class="satire-note">It’s a joke, not a market forecast.</p></div>
-        <div class="forecast-panel">
+        <div class="outlook-intro reveal"><h2 id="outlook-title">Adjust the confidence.<br><em>Keep the evidence.</em></h2><p>Our outlook generator turns a little conviction into a lot of commentary. Move the slider and see how the story changes.</p><p class="satire-note">It’s a joke, not a market forecast.</p></div>
+        <div class="forecast-panel reveal">
           <label for="conviction">Confidence <output id="conviction-value" for="conviction">Quietly confident</output></label>
           <input id="conviction" type="range" min="0" max="100" value="40">
           <div class="range-labels"><span>Cautious</span><span>Certain</span></div>
@@ -61,6 +69,6 @@
       </div>
     </section>
   </main>
-  <footer class="wrap"><div><strong>North Wind Capital</strong><p>A side project, not an investment fund.</p></div><div class="footer-links"><a href="https://github.com/north-wind-capital">Find us on GitHub <span aria-hidden="true">↗</span></a><a href="assets/north-wind-logo.png" download="north-wind-capital-logo.png">Download the logo <span aria-hidden="true">↗</span></a></div></footer>
+  <footer><div class="wrap footer-content"><div><strong>North Wind Capital</strong><p>A side project, not an investment fund.</p></div><div class="footer-links"><a href="https://github.com/north-wind-capital">Find us on GitHub <span aria-hidden="true">↗</span></a><a href="assets/north-wind-logo.png" download="north-wind-capital-logo.png">Download the logo <span aria-hidden="true">↗</span></a></div></div><div class="footer-wordmark" aria-hidden="true">North Wind</div></footer>
 </body>
 </html>
