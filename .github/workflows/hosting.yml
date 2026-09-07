@@ -58,7 +58,8 @@ jobs:
               print(result.stdout, end='')
               if result.returncode == 0:
                   break
-              if 'The certificate does not exist yet' not in result.stderr or attempt == 19:
+              pending = ('The certificate does not exist yet', 'The certificate has not finished being issued')
+              if not any(message in result.stderr for message in pending) or attempt == 19:
                   print(result.stderr)
                   raise SystemExit(result.returncode)
               print('Waiting 15 seconds for GitHub certificate provisioning', flush=True)
