@@ -59,8 +59,6 @@ const wash = document.querySelector('.outlook-wash');
 const wordmark = document.querySelector('.footer-wordmark');
 const compass = document.querySelector('.compass-guide');
 const compassNeedle = document.querySelector('.compass-needle');
-const directors = document.querySelector('.directors');
-const compassObstacles = [...document.querySelectorAll('h1,h2,h3,p,a,button,input,label,.range-labels')].filter(element => !element.closest('[aria-hidden="true"]'));
 const reveals = [...document.querySelectorAll('.reveal')];
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 let motionEnabled = !reducedMotion.matches;
@@ -78,46 +76,46 @@ text.split(' ').forEach((word, index) => {
 });
 const words = [...reading.querySelectorAll('.word')];
 
+let compassState = null;
+let compassTarget = null;
+let compassFrame = null;
+let compassTime = null;
+
+function glideCompass(time) {
+  compassFrame = null;
+  if (!motionEnabled || !compassTarget) return;
+  const elapsed = compassTime === null ? 16 : Math.min(time - compassTime, 64);
+  compassTime = time;
+  const blend = 1 - Math.exp(-elapsed / 180);
+  let moving = false;
+  for (const key of ['x', 'y', 'angle']) {
+    const delta = compassTarget[key] - compassState[key];
+    if (Math.abs(delta) > .05) {
+      compassState[key] += delta * blend;
+      moving = true;
+    } else compassState[key] = compassTarget[key];
+  }
+  compass.style.transform = `translate3d(${compassState.x}px,${compassState.y}px,0)`;
+  compassNeedle.style.transform = `rotate(${compassState.angle}deg)`;
+  if (moving) compassFrame = requestAnimationFrame(glideCompass);
+  else compassTime = null;
+}
+
 function positionCompass(scroll, height) {
   const width = window.innerWidth;
   const size = compass.offsetWidth;
-  const radius = size / 2;
-  const rail = width - radius - (compactScreen.matches ? 6 : 16);
-  const top = header.getBoundingClientRect().bottom + radius + 20;
-  const bottom = height - radius - 24;
-  const viewportCenter = scroll + height * .5;
-  const landmarks = [
-    { element: hero, x: .89, y: .76 },
-    { element: statement, x: .08, y: .68 },
-    { element: approach, x: .49, y: .76 },
-    { element: directors, x: .5, y: .56 },
-    { element: outlook, x: .5, y: .82 },
-    { element: wordmark.parentElement, x: .92, y: .6 }
-  ].map(point => ({ ...point, at: point.element.getBoundingClientRect().top + scroll + point.element.offsetHeight * .35 }));
-  let index = 0;
-  while (index < landmarks.length - 2 && viewportCenter > landmarks[index + 1].at) index++;
-  const from = landmarks[index];
-  const to = landmarks[index + 1];
-  const phase = clamp((viewportCenter - from.at) / Math.max(to.at - from.at, 1));
-  const eased = phase * phase * (3 - 2 * phase);
-  let x = compactScreen.matches ? rail : width * (from.x + (to.x - from.x) * eased);
-  let y = clamp(height * (from.y + (to.y - from.y) * eased), top, bottom);
-  if (!compactScreen.matches) {
-    const obstacles = compassObstacles.flatMap(element => {
-      const style = getComputedStyle(element);
-      if (style.visibility === 'hidden' || style.display === 'none') return [];
-      return [...element.getClientRects()].filter(rect => rect.bottom > 0 && rect.top < height);
-    });
-    const clear = (cx, cy) => !obstacles.some(rect => cx + radius + 12 > rect.left && cx - radius - 12 < rect.right && cy + radius + 12 > rect.top && cy - radius - 12 < rect.bottom);
-    if (!clear(x, y)) {
-      // Prefer a nearby open position, then use the reserved outside margin.
-      const choices = [[x, y + 100], [x, y - 100], [width * .5, y], [rail, y], [radius + 16, y]];
-      const safe = choices.find(([cx, cy]) => cy >= top && cy <= bottom && clear(cx, cy));
-      [x, y] = safe || [rail, bottom];
-    }
-  }
-  compass.style.transform = `translate3d(${x - radius}px,${y - radius}px,0)`;
-  compassNeedle.style.transform = `rotate(${scroll * .24 - 18}deg)`;
+  const inset = compactScreen.matches ? 7 : 12;
+  // A continuous path in the outside margin avoids both text and collision detours.
+  const drift = compactScreen.matches ? 0 : (1 + Math.sin(scroll / 1200)) * 3;
+  const top = header.getBoundingClientRect().bottom + 24;
+  const bottom = height - size - 24;
+  compassTarget = {
+    x: width - size - inset - drift,
+    y: clamp(height * (.65 + .12 * Math.sin(scroll / 1000)), top, bottom),
+    angle: scroll * .065 - 18
+  };
+  if (!compassState) compassState = { ...compassTarget };
+  if (compassFrame === null) compassFrame = requestAnimationFrame(glideCompass);
 }
 
 function renderMotion() {
@@ -184,6 +182,11 @@ function setMotion(enabled) {
   motionToggle.textContent = enabled ? 'Pause motion' : 'Enable motion';
   motionToggle.setAttribute('aria-pressed', String(!enabled));
   if (!enabled) {
+    cancelAnimationFrame(compassFrame);
+    compassFrame = null;
+    compassState = null;
+    compassTarget = null;
+    compassTime = null;
     [heroImage, heroCopy, heroHorizon, progress, flow, wash, wordmark, compass, compassNeedle, ...principles].forEach(element => {
       element.style.removeProperty('transform');
       element.style.removeProperty('opacity');
