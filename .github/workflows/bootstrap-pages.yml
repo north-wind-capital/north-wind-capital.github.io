@@ -17,4 +17,6 @@ jobs:
           else
             gh api --method POST "repos/$GITHUB_REPOSITORY/pages" -f build_type=workflow
           fi
-          gh api --method PUT "repos/$GITHUB_REPOSITORY/pages" -F https_enforced=true
+          if [ "$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.https_enforced')" != "true" ]; then
+            gh api --method PUT "repos/$GITHUB_REPOSITORY/pages" -F https_enforced=true
+          fi
