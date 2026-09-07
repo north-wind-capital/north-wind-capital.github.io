@@ -14,7 +14,7 @@ Open http://localhost:8000. The generated logo is `site/assets/north-wind-logo.p
 
 ## Publication
 
-GitHub Actions validates the static files and deploys only `site/` to GitHub Pages on pushes to `main`. Site deployments run through Actions. Repository administration and custom-domain settings are managed through the GitHub API; DNS is managed through the Cloudflare API.
+GitHub Actions validates the static files and deploys only `site/` to GitHub Pages on pushes to `main`. Site deployments and hosting infrastructure changes run through GitHub Actions. The hosting workflow reconciles versioned configuration through the GitHub and Cloudflare APIs.
 
 For the first deployment, the manually triggered bootstrap workflow enables Pages using a temporary `PAGES_SETUP_TOKEN` repository secret with repository administration access. Remove the secret once bootstrap completes. Subsequent deployments use the built-in `GITHUB_TOKEN` only.
 
@@ -28,7 +28,11 @@ GitHub Pages uses `northwindcapital.co.nz` as its custom domain. Cloudflare DNS 
 
 Cloudflare credentials and the zone ID are in Doppler project `northwindcapital`, config `admin`. Never commit credentials. This Actions-based Pages deployment uses the repository's custom-domain setting; it does not require a CNAME file.
 
-For a domain rollback, restore the previous repository name `north-wind-capital.github.io`, remove only the website DNS records added for this migration, clear the Pages custom-domain setting, and rerun the deployment workflow. Keep email DNS records intact.
+`infra/hosting.json` adopts the five existing website DNS record IDs and declares the Pages domain and HTTPS setting. The manually dispatched `Reconcile hosting infrastructure` workflow plans first, then applies only when its `apply` input is true. The reconciler refuses local applies and never deletes records. Missing adopted records fail for review; email records are outside its scope.
+
+Before dispatch, provision temporary repository secrets `PAGES_SETUP_TOKEN` (GitHub repository administration access) and `HOSTING_CLOUDFLARE_API_TOKEN` from the existing authorized credentials. Remove both after the run, including failed runs. Credentials are never committed. Future runs require reprovisioning these secrets; the ordinary site deployment needs neither.
+
+For configuration rollback, revert `infra/hosting.json` and dispatch the hosting workflow with apply enabled. Moving away from the domain or removing adopted records requires an explicit versioned migration workflow; do not delete email records. The repository rename and DNS creation were initially performed locally, then the existing DNS records and Pages settings were adopted into this Actions-managed configuration.
 
 ## Brand
 

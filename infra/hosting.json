@@ -1,0 +1,48 @@
+{
+  "repository": "north-wind-capital/northwindcapital",
+  "domain": "northwindcapital.co.nz",
+  "zone_id": "35d8964c0a41999e112ad71d6e80f4ef",
+  "https_enforced": true,
+  "records": [
+    {
+      "id": "720fa915aad8ec1cac035991e2fc91b3",
+      "type": "A",
+      "name": "northwindcapital.co.nz",
+      "content": "185.199.111.153",
+      "ttl": 300,
+      "proxied": false
+    },
+    {
+      "id": "6d3991cf870182508993991f4e3f7439",
+      "type": "A",
+      "name": "northwindcapital.co.nz",
+      "content": "185.199.110.153",
+      "ttl": 300,
+      "proxied": false
+    },
+    {
+      "id": "82791638ccb355e43ff1bec2a2b77329",
+      "type": "A",
+      "name": "northwindcapital.co.nz",
+      "content": "185.199.109.153",
+      "ttl": 300,
+      "proxied": false
+    },
+    {
+      "id": "80054c1511e40af67e498d285ade993c",
+      "type": "A",
+      "name": "northwindcapital.co.nz",
+      "content": "185.199.108.153",
+      "ttl": 300,
+      "proxied": false
+    },
+    {
+      "id": "b77a2ef5f44ad907ed6af47123701514",
+      "type": "CNAME",
+      "name": "www.northwindcapital.co.nz",
+      "content": "north-wind-capital.github.io",
+      "ttl": 300,
+      "proxied": false
+    }
+  ]
+}

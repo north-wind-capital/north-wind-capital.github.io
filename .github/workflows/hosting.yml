@@ -1,0 +1,31 @@
+name: Reconcile hosting infrastructure
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Apply desired hosting configuration
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: hosting-infrastructure
+  cancel-in-progress: false
+jobs:
+  hosting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate reconciler
+        run: python3 -m unittest discover -s infra -p 'test_*.py'
+      - name: Plan
+        env:
+          GH_TOKEN: ${{ secrets.PAGES_SETUP_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.HOSTING_CLOUDFLARE_API_TOKEN }}
+        run: python3 infra/reconcile.py
+      - name: Apply and verify
+        if: ${{ inputs.apply }}
+        env:
+          GH_TOKEN: ${{ secrets.PAGES_SETUP_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.HOSTING_CLOUDFLARE_API_TOKEN }}
+        run: python3 infra/reconcile.py --apply
