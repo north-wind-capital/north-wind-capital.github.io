@@ -18,3 +18,5 @@ footer{background:var(--night);color:var(--paper);padding-top:60px;overflow:hidd
 @media(max-width:760px){.compass-guide{width:36px;height:36px;transform:translate3d(calc(100vw - 42px),calc(100svh - 65px),0)}.wrap{padding-right:52px}.director h3{font-size:clamp(60px,20vw,76px)}}
 .motion-enabled .compass-guide{transition:transform .55s cubic-bezier(.2,.7,.2,1)}
 @media(min-width:761px) and (max-width:1399px){.compass-guide{width:56px;height:56px}}
+
+.hero .intro{font-size:clamp(24px,2.2vw,32px);line-height:1.45}
