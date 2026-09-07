@@ -1,6 +1,6 @@
 # North Wind Capital
 
-A very serious unserious public site: https://north-wind-capital.github.io
+A very serious unserious public site: https://northwindcapital.co.nz
 
 Static HTML, CSS, and JavaScript. No framework, tracking, backend, or live financial data. The outlook generator is satire.
 
@@ -14,11 +14,21 @@ Open http://localhost:8000. The generated logo is `site/assets/north-wind-logo.p
 
 ## Publication
 
-GitHub Actions validates the static files and deploys only `site/` to GitHub Pages on pushes to `main`. Changes to hosting are run through Actions.
+GitHub Actions validates the static files and deploys only `site/` to GitHub Pages on pushes to `main`. Site deployments run through Actions. Repository administration and custom-domain settings are managed through the GitHub API; DNS is managed through the Cloudflare API.
 
 For the first deployment, the manually triggered bootstrap workflow enables Pages using a temporary `PAGES_SETUP_TOKEN` repository secret with repository administration access. Remove the secret once bootstrap completes. Subsequent deployments use the built-in `GITHUB_TOKEN` only.
 
 To roll back, revert the relevant source commit and push to `main`; the deployment workflow republishes the previous site.
+
+## Domain and repository
+
+Repository: https://github.com/north-wind-capital/northwindcapital
+
+GitHub Pages uses `northwindcapital.co.nz` as its custom domain. Cloudflare DNS has four DNS-only apex A records (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a DNS-only `www` CNAME pointing to `north-wind-capital.github.io`. GitHub redirects `www` to the apex and provides the HTTPS certificate. Existing email records are independent of the website records.
+
+Cloudflare credentials and the zone ID are in Doppler project `northwindcapital`, config `admin`. Never commit credentials. This Actions-based Pages deployment uses the repository's custom-domain setting; it does not require a CNAME file.
+
+For a domain rollback, restore the previous repository name `north-wind-capital.github.io`, remove only the website DNS records added for this migration, clear the Pages custom-domain setting, and rerun the deployment workflow. Keep email DNS records intact.
 
 ## Brand
 
