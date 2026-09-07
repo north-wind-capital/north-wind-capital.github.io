@@ -32,7 +32,9 @@ Cloudflare credentials and the zone ID are in Doppler project `northwindcapital`
 
 Before dispatch, provision temporary repository secrets `PAGES_SETUP_TOKEN` (GitHub repository administration access) and `HOSTING_CLOUDFLARE_API_TOKEN` from the existing authorized credentials. Remove both after the run, including failed runs. Credentials are never committed. Future runs require reprovisioning these secrets; the ordinary site deployment needs neither.
 
-For configuration rollback, revert `infra/hosting.json` and dispatch the hosting workflow with apply enabled. Moving away from the domain or removing adopted records requires an explicit versioned migration workflow; do not delete email records. The repository rename and DNS creation were initially performed locally, then the existing DNS records and Pages settings were adopted into this Actions-managed configuration.
+For configuration rollback, revert `infra/hosting.json` and dispatch the hosting workflow with apply enabled. If GitHub reports that the certificate does not exist after DNS has propagated, dispatch with `refresh_certificate=true` to rebind the domain and retry HTTPS for up to five minutes. This briefly interrupts custom-domain routing.
+
+Moving away from the domain or removing adopted records requires an explicit versioned migration workflow; do not delete email records. The repository rename and DNS creation were initially performed locally, then the existing DNS records and Pages settings were adopted into this Actions-managed configuration.
 
 ## Brand
 

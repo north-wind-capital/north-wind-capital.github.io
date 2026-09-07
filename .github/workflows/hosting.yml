@@ -6,6 +6,10 @@ on:
         description: Apply desired hosting configuration
         type: boolean
         default: false
+      refresh_certificate:
+        description: Rebind the custom domain to restart certificate provisioning
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -23,9 +27,40 @@ jobs:
           GH_TOKEN: ${{ secrets.PAGES_SETUP_TOKEN }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.HOSTING_CLOUDFLARE_API_TOKEN }}
         run: python3 infra/reconcile.py
+      - name: Restart certificate provisioning
+        if: ${{ inputs.apply && inputs.refresh_certificate }}
+        env:
+          GH_TOKEN: ${{ secrets.PAGES_SETUP_TOKEN }}
+        run: |
+          python3 - <<'PYTHON'
+          import json, os, sys
+          sys.path.insert(0, 'infra')
+          from reconcile import request
+          config = json.load(open('infra/hosting.json'))
+          endpoint = '/repos/' + config['repository'] + '/pages'
+          def update(body):
+              request('https://api.github.com', os.environ['GH_TOKEN'], endpoint, 'PUT', body)
+          try:
+              update({'cname': None})
+          finally:
+              update({'cname': config['domain']})
+          PYTHON
       - name: Apply and verify
         if: ${{ inputs.apply }}
         env:
           GH_TOKEN: ${{ secrets.PAGES_SETUP_TOKEN }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.HOSTING_CLOUDFLARE_API_TOKEN }}
-        run: python3 infra/reconcile.py --apply
+        run: |
+          python3 - <<'PYTHON'
+          import subprocess, time
+          for attempt in range(20):
+              result = subprocess.run(['python3', 'infra/reconcile.py', '--apply'], capture_output=True, text=True)
+              print(result.stdout, end='')
+              if result.returncode == 0:
+                  break
+              if 'The certificate does not exist yet' not in result.stderr or attempt == 19:
+                  print(result.stderr)
+                  raise SystemExit(result.returncode)
+              print('Waiting 15 seconds for GitHub certificate provisioning', flush=True)
+              time.sleep(15)
+          PYTHON
