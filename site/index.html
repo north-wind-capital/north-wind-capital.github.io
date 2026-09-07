@@ -46,13 +46,13 @@
     </section>
     <section id="philosophy" class="philosophy" aria-label="Our approach">
       <div class="approach-stage wrap">
-        <div class="approach-heading"><h2>Follow the question.<br><em>Then the evidence.</em></h2><div class="approach-steps" aria-hidden="true"><span></span><span></span><span></span></div></div>
+        <div class="approach-heading"><h2>Follow the question.<br><em>Then the evidence.</em></h2><div class="approach-steps" role="group" aria-label="Explore our approach" hidden><button type="button" data-chapter="0">Signal</button><button type="button" data-chapter="1">Model</button><button type="button" data-chapter="2">Reconsider</button></div></div>
         <div class="principles">
           <article class="principle"><h3>Find<br>the signal.</h3><p>Start with a question. Look for data that can answer it, including the evidence we’d rather ignore.</p></article>
           <article class="principle"><h3>Question<br>the model.</h3><p>Test the assumptions. A convincing chart is a reason to look closer, not a reason to stop.</p></article>
           <article class="principle"><h3>Change<br>our minds.</h3><p>Keep what holds up. Drop what doesn’t. Try to do this before calling it a strategic pivot.</p></article>
         </div>
-        <svg class="flow-art" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="currentColor"><path d="M-100 700C150 700 100 100 400 300S650 950 1000 200S1150 300 1300 100"/><path d="M-100 730C150 730 100 130 400 330S650 980 1000 230S1150 330 1300 130"/><path d="M-100 760C150 760 100 160 400 360S650 1010 1000 260S1150 360 1300 160"/><path d="M-100 790C150 790 100 190 400 390S650 1040 1000 290S1150 390 1300 190"/><path d="M-100 820C150 820 100 220 400 420S650 1070 1000 320S1150 420 1300 220"/></g></svg>
+        <svg class="flow-art" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="currentColor"><path pathLength="1" d="M-100 700C150 700 100 100 400 300S650 950 1000 200S1150 300 1300 100"/><path pathLength="1" d="M-100 730C150 730 100 130 400 330S650 980 1000 230S1150 330 1300 130"/><path pathLength="1" d="M-100 760C150 760 100 160 400 360S650 1010 1000 260S1150 360 1300 160"/><path pathLength="1" d="M-100 790C150 790 100 190 400 390S650 1040 1000 290S1150 390 1300 190"/><path pathLength="1" d="M-100 820C150 820 100 220 400 420S650 1070 1000 320S1150 420 1300 220"/></g></svg>
       </div>
     </section>
     <section id="directors" class="directors wrap" aria-labelledby="directors-title">
@@ -72,6 +72,7 @@
           <div class="range-labels"><span>Cautious</span><span>Certain</span></div>
           <div class="forecast-result" aria-live="polite" aria-atomic="true"><h3 id="forecast-title">Cautiously optimistic. Enthusiastically overdressed.</h3><p id="forecast-copy">Open a spreadsheet, look thoughtfully out of a window, and change absolutely nothing.</p></div>
           <button class="forecast-button" id="generate" type="button">Generate an outlook <span aria-hidden="true">↻</span></button>
+          <div class="forecast-sharing" hidden><button id="copy-outlook" type="button">Copy link to this outlook <span aria-hidden="true">↗</span></button><p id="share-status" role="status"></p></div>
           <noscript><p>Enable JavaScript to use the generator.</p></noscript>
         </div>
       </div>

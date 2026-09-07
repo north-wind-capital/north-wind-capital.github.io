@@ -4,6 +4,12 @@ const output = document.querySelector('#conviction-value');
 const title = document.querySelector('#forecast-title');
 const copy = document.querySelector('#forecast-copy');
 let previous = -1;
+let selectedOutlook = null;
+let forecastAnimation = null;
+let shareResetTimer;
+const forecastResult = document.querySelector('.forecast-result');
+const shareStatus = document.querySelector('#share-status');
+const shareButton = document.querySelector('#copy-outlook');
 const outlooks = [
   [
     ['Strategically doing nothing.', 'Make tea. Let someone else have an opinion.'],
@@ -27,14 +33,61 @@ function convictionLabel() {
   slider.setAttribute('aria-valuetext', output.textContent);
 }
 slider.addEventListener('input', convictionLabel);
+function showOutlook(group, index, confidence, animate = true) {
+  selectedOutlook = { group, index, confidence };
+  previous = index;
+  title.textContent = outlooks[group][index][0];
+  copy.textContent = outlooks[group][index][1];
+  shareStatus.textContent = '';
+  if (forecastAnimation) forecastAnimation.cancel();
+  if (animate && motionEnabled) {
+    forecastAnimation = forecastResult.animate(
+      [{ opacity: .25, transform: 'translateY(12px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' }
+    );
+  }
+}
+
 document.querySelector('#generate').addEventListener('click', () => {
-  const group = Number(slider.value) < 34 ? 0 : Number(slider.value) < 67 ? 1 : 2;
+  const confidence = Number(slider.value);
+  const group = confidence < 34 ? 0 : confidence < 67 ? 1 : 2;
   const next = (previous + 1 + Math.floor(Math.random() * 2)) % 3;
-  previous = next;
-  const forecast = outlooks[group][next];
-  title.textContent = forecast[0];
-  copy.textContent = forecast[1];
+  showOutlook(group, next, confidence);
 });
+
+shareButton.addEventListener('click', async () => {
+  const url = new URL(window.location.href);
+  url.search = '';
+  url.hash = 'outlook';
+  if (selectedOutlook) {
+    url.searchParams.set('outlook', `${selectedOutlook.group}-${selectedOutlook.index}`);
+    url.searchParams.set('confidence', String(selectedOutlook.confidence));
+  }
+  clearTimeout(shareResetTimer);
+  try {
+    await navigator.clipboard.writeText(url.href);
+    shareStatus.textContent = 'Link copied.';
+    shareResetTimer = setTimeout(() => { shareStatus.textContent = ''; }, 4000);
+  } catch {
+    shareStatus.replaceChildren();
+    const link = document.createElement('a');
+    link.href = url.href;
+    link.textContent = 'Open this outlook to copy its address.';
+    shareStatus.append(link);
+  }
+});
+document.querySelector('.forecast-sharing').hidden = false;
+const sharedParams = new URLSearchParams(window.location.search);
+const sharedMatch = /^([0-2])-([0-2])$/.exec(sharedParams.get('outlook') || '');
+if (sharedMatch) {
+  const group = Number(sharedMatch[1]);
+  const index = Number(sharedMatch[2]);
+  const requested = Number(sharedParams.get('confidence'));
+  const validConfidence = sharedParams.has('confidence') && Number.isInteger(requested) && requested >= 0 && requested <= 100 && (requested < 34 ? 0 : requested < 67 ? 1 : 2) === group;
+  const confidence = validConfidence ? requested : [16, 50, 84][group];
+  slider.value = String(confidence);
+  showOutlook(group, index, confidence, false);
+}
 convictionLabel();
 
 // Native scrolling drives one animation frame per update; no scroll interception.
@@ -52,7 +105,7 @@ const statement = document.querySelector('.statement');
 const reading = document.querySelector('.reading-line');
 const approach = document.querySelector('.philosophy');
 const principles = [...document.querySelectorAll('.principle')];
-const steps = [...document.querySelectorAll('.approach-steps span')];
+const steps = [...document.querySelectorAll('.approach-steps button')];
 const flow = document.querySelector('.flow-art');
 const outlook = document.querySelector('.outlook');
 const wash = document.querySelector('.outlook-wash');
@@ -123,6 +176,11 @@ function renderMotion() {
   const height = window.innerHeight;
   const scroll = window.scrollY;
   header.classList.toggle('scrolled', scroll > 50);
+  const currentSection = ['philosophy', 'directors', 'outlook'].filter(id => document.getElementById(id).getBoundingClientRect().top <= height * .4).at(-1);
+  document.querySelectorAll('nav a').forEach(link => {
+    if (link.hash === '#' + currentSection) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
   if (!motionEnabled) return;
   positionCompass(scroll, height);
   const pageLength = document.documentElement.scrollHeight - height;
@@ -154,7 +212,11 @@ function renderMotion() {
       principle.style.visibility = Math.abs(distance) < .61 ? 'visible' : 'hidden';
     }
     steps[index].style.setProperty('--fill', String(clamp(chapter - index + 1)));
+    const activeChapter = compactScreen.matches ? Math.max(0, principles.filter(item => item.getBoundingClientRect().top < height * .6).length - 1) : Math.round(chapter);
+    if (activeChapter === index) steps[index].setAttribute('aria-current', 'step');
+    else steps[index].removeAttribute('aria-current');
   });
+  flow.style.setProperty('--draw', String(1 - clamp(.25 + approachPhase * .9)));
   flow.style.transform = `translate3d(${approachPhase * -6}%,0,0) rotate(${approachPhase * 14 - 7}deg) scale(1.2)`;
 
   const outlookRect = outlook.getBoundingClientRect();
@@ -182,6 +244,7 @@ function setMotion(enabled) {
   motionToggle.textContent = enabled ? 'Pause motion' : 'Enable motion';
   motionToggle.setAttribute('aria-pressed', String(!enabled));
   if (!enabled) {
+    if (forecastAnimation) forecastAnimation.cancel();
     cancelAnimationFrame(compassFrame);
     compassFrame = null;
     compassState = null;
@@ -196,6 +259,21 @@ function setMotion(enabled) {
   }
   requestMotionFrame();
 }
+
+document.querySelector('.approach-steps').hidden = false;
+steps.forEach((button, index) => button.addEventListener('click', () => {
+  steps.forEach((step, i) => {
+    if (i === index) step.setAttribute('aria-current', 'step');
+    else step.removeAttribute('aria-current');
+  });
+  if (motionEnabled && !compactScreen.matches) {
+    const start = approach.getBoundingClientRect().top + window.scrollY;
+    const distance = Math.max(approach.offsetHeight - window.innerHeight, 0);
+    window.scrollTo({ top: start + distance * index / 2.6, behavior: 'smooth' });
+  } else {
+    principles[index].scrollIntoView({ behavior: motionEnabled ? 'smooth' : 'instant', block: 'center' });
+  }
+}));
 
 motionToggle.hidden = false;
 motionToggle.addEventListener('click', () => {
