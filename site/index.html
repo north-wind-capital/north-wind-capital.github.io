@@ -19,6 +19,14 @@
     <button id="motion-toggle" class="motion-toggle" type="button" hidden aria-pressed="false">Pause motion</button>
     <div class="scroll-progress" aria-hidden="true"></div>
   </header>
+  <div class="compass-guide" aria-hidden="true">
+    <svg viewBox="0 0 100 100" focusable="false">
+      <circle class="compass-face" cx="50" cy="50" r="47"/>
+      <circle cx="50" cy="50" r="39" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="1 9.21" opacity=".55"/>
+      <path d="M50 9v8m0 66v8M9 50h8m66 0h8" stroke="currentColor" stroke-width="1.5"/>
+      <g class="compass-needle"><path d="M50 21L60 53L50 48L40 53Z" fill="#153f34"/><path d="M50 79L60 47L50 52L40 47Z" fill="#a9472b"/><circle cx="50" cy="50" r="3" fill="#f3f0e5" stroke="#153f34"/></g>
+    </svg>
+  </div>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-stage">
