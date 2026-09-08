@@ -54,3 +54,7 @@ A small, low-contrast SVG compass follows a continuous path in the outside margi
 
 
 The approach chapter controls navigate the pinned sequence directly (or scroll to a principle in the stacked layout). Navigation tracks the active section. Wind paths and director dividers draw into view. Generated outlooks animate on replacement and can be shared using a URL that restores the selected text and confidence. Clipboard denial exposes an ordinary link instead; invalid URL values are ignored or normalised. No personal information is stored or sent.
+
+## Products
+
+The Products section lists North Wind projects, starting with [TenderScout](https://tenderscout.northwindcapital.co.nz/), a daily email of New Zealand government tenders. Each product is an article in `site/index.html`; the Products navigation link participates in the existing active-section tracking.
