@@ -176,7 +176,7 @@ function renderMotion() {
   const height = window.innerHeight;
   const scroll = window.scrollY;
   header.classList.toggle('scrolled', scroll > 50);
-  const currentSection = ['philosophy', 'directors', 'outlook'].filter(id => document.getElementById(id).getBoundingClientRect().top <= height * .4).at(-1);
+  const currentSection = ['philosophy', 'products', 'directors', 'outlook'].filter(id => document.getElementById(id).getBoundingClientRect().top <= height * .4).at(-1);
   document.querySelectorAll('nav a').forEach(link => {
     if (link.hash === '#' + currentSection) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
